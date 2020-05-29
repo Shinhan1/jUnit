@@ -1,0 +1,17 @@
+MySQL
+테이블 생성
+
+create table tbl_member(
+uid varchar(50) not null,
+pwd varchar(50) not null,
+username varchar(50) not null,
+email varchar(100),
+regdate timestamp default now(),
+updateDate timestamp default now(),
+primary key(uid)
+);
+
+tbl_member는 goottWeb프로젝트를 사용하려면 만들어져야하는 Table
+
+
+
