@@ -1,0 +1,87 @@
++ Mybatis 표현식
+ 
+> 동적 SQL
+ - IF
+ex) <if test="Content != null">
+ 		명령문 ...
+ 	 </if>
+
+- choose(when, otherwise)
+ex) 
+<select id="findActiveBlogLike" resultType="Blog">
+  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+  <choose>
+    <when test="title != null">
+      AND title like #{title}
+    </when>
+    <when test="author != null and author.name != null">
+      AND author_name like #{author.name}
+    </when>
+    <otherwise>
+      AND featured = 1
+    </otherwise>
+  </choose>
+</select>
+
+* trim, where, set
+ex)
+
+<update id="updateMember" parameterType="dto">
+	update tbl_member
+	
+	/* set username = #{username}, email = #{email}, mp = #{mp} */
+	따로 지정 가능
+	<trim prefix="set" suffixOverrides=",">
+		<if test="username" != null>username = #{username},</if>
+		<if test="email" != null>email = #{email},</if>
+		<if test="mp" != null>mp = #{mp},</if>
+	</trim>
+	where uid = #{uid}
+</update>
+
+ex) 연산자
+
+<select id="empInfo" parameterType="int" resultType="empDto">
+	select * from emp
+	
+	/* where ? and ? and ? or ? ... */
+	<trim prefix="where" prefixOverrides="AND | OR">
+		<if text = "ename != null">ename = #{ename}</if>
+		<if text = "empno != null">AND empno = #{empno}</if>
+		<if text = "sal != null">AND sal = #{sal}</if>
+	</trim>
+	
+</select>
+
+- foreach (반복) > 동적 SQL 에서 공통적으로 필요한 것은 collection 에 대해 반복처리를 하는 것이다. 종종 IN 조건을 사용하게 된다
+ex)
+<select id="selectPostIn" resultType="domain.blog.Post">
+  SELECT *
+  FROM POST P
+  WHERE ID in
+  <foreach item="item" index="index" collection="list"
+      open="(" separator="," close=")">
+        #{item}
+  </foreach>
+</select>
+
+
+<select>
+	<![CDATA[						-> CDATA로 막을 수 있다.
+		select * from dept
+		where deptno > 30			-> 가끔 >가 태그로 먹을 수도 있으므로
+	]]>
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
